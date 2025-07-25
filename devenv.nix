@@ -1,4 +1,4 @@
-{ pkgs, lib, config, ... }:
+{ pkgs, config, ... }:
 
 {
   # Project name
@@ -12,9 +12,10 @@
 
   # Add required system packages
   packages = with pkgs; [
-    # Development and utility tools
-    git
-    # Python packages will be managed separately through pip or other methods
+    python311Packages.textual
+    python311Packages.rich
+    python311Packages.pyyaml
+    python311Packages.python-frontmatter
   ];
 
   # Scripts for common development tasks
@@ -22,21 +23,14 @@
     # Run the ReadItNow application
     "readitnow" = {
       exec = ''
-        python src/readitnow/main.py "$@"
+        python src/main.py "$@"
       '';
     };
     
     # Development mode - runs with debug flags
     "readitnow-dev" = {
       exec = ''
-        python -u src/readitnow/main.py "$@"
-      '';
-    };
-
-    # Install Python dependencies
-    "install-deps" = {
-      exec = ''
-        pip install textual rich pyyaml python-frontmatter
+        python -u src/main.py "$@"
       '';
     };
   };

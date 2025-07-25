@@ -15,12 +15,13 @@ def check_dependencies():
         import rich
         import yaml
         import frontmatter
+        from importlib.metadata import version
         
         print("✅ All dependencies are available:")
-        print(f"  - textual: {textual.__version__}")
-        print(f"  - rich: {rich.__version__}")
-        print(f"  - PyYAML: {yaml.__version__}")
-        print(f"  - python-frontmatter: {frontmatter.__version__}")
+        print(f"  - textual: {version('textual')}")
+        print(f"  - rich: {version('rich')}")
+        print(f"  - python-frontmatter: {version('python-frontmatter')}")
+        print(f"  - PyYAML: {version('pyyaml')}")
         return True
     except ImportError as e:
         print(f"❌ Missing dependency: {e}")
