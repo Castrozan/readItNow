@@ -56,7 +56,7 @@ class NoteCard(Widget):
     def __init__(self, note_data: dict, **kwargs):
         super().__init__(**kwargs)
         self.note_data = note_data
-        self.is_read = "readitnow/read" in note_data.get("tags", [])
+        self.is_read = note_data.get("is_read", False)
         
     def compose(self) -> ComposeResult:
         """Create the note card layout."""
@@ -70,13 +70,13 @@ class NoteCard(Widget):
                 title = self.note_data.get("title", "Untitled")
                 if len(title) > 30:
                     title = title[:27] + "..."
-                yield Label(title, classes="title")
+                yield Label(title, classes="title", markup=False)
                 
                 # Excerpt
                 excerpt = self.note_data.get("excerpt", "No excerpt available")
                 if len(excerpt) > 80:
                     excerpt = excerpt[:77] + "..."
-                yield Label(excerpt, classes="excerpt")
+                yield Label(excerpt, classes="excerpt", markup=False)
                 
                 # Tags
                 tags = self.note_data.get("tags", [])
@@ -85,7 +85,7 @@ class NoteCard(Widget):
                     tag_text += " ..."
                 if self.is_read:
                     tag_text = "✅ " + tag_text
-                yield Label(tag_text, classes="tags")
+                yield Label(tag_text, classes="tags", markup=False)
     
     def on_mount(self) -> None:
         """Apply read styling if needed."""

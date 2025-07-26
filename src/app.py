@@ -2,6 +2,7 @@ from textual.app import App, ComposeResult
 from textual.containers import Container
 from textual.widgets import Static
 from widgets.notes_grid import NotesGrid
+from vault_reader import VaultReader
 import datetime
 
 class ReadItNowApp(App):
@@ -39,64 +40,23 @@ class ReadItNowApp(App):
         ("down", "scroll_down", "Scroll Down"),
     ]
     
-    def __init__(self, vault_path: str, **kwargs):
+    def __init__(self, config: dict = None, **kwargs):
         super().__init__(**kwargs)
-        self.vault_path = vault_path
-        self.mock_notes = self._create_mock_notes()
-    
-    def _create_mock_notes(self) -> list[dict]:
-        """Create mock note data for demonstration."""
-        return [
-            {
-                "title": "How to Build Better Software with Clean Architecture",
-                "excerpt": "Clean architecture is a software design philosophy that separates the elements of a design into ring levels. The main rule is that code dependencies can only point inwards...",
-                "tags": ["architecture", "software", "development"],
-                "url": "https://example.com/clean-architecture",
-                "file_path": "clean-architecture.md",
-                "modified": datetime.datetime.now()
-            },
-            {
-                "title": "The Rise of AI in Modern Development",
-                "excerpt": "Artificial Intelligence is transforming how we write, test, and deploy software. From code completion to automated testing, AI tools are becoming essential...",
-                "tags": ["ai", "development", "tools", "readitnow/read"],
-                "url": "https://example.com/ai-development", 
-                "file_path": "ai-development.md",
-                "modified": datetime.datetime.now()
-            },
-            {
-                "title": "Mastering Python Asyncio",
-                "excerpt": "Asynchronous programming in Python can be challenging but extremely powerful. This guide covers the fundamentals of asyncio and how to write efficient async code...",
-                "tags": ["python", "asyncio", "programming"],
-                "url": "https://example.com/python-asyncio",
-                "file_path": "python-asyncio.md", 
-                "modified": datetime.datetime.now()
-            },
-            {
-                "title": "Terminal UI Design Principles",
-                "excerpt": "Creating beautiful and functional terminal user interfaces requires understanding both technical constraints and user experience principles. Here's what you need to know...",
-                "tags": ["tui", "design", "terminal", "ux"],
-                "url": "https://example.com/tui-design",
-                "file_path": "tui-design.md",
-                "modified": datetime.datetime.now()
-            },
-            {
-                "title": "Getting Started with Nix",
-                "excerpt": "Nix is a powerful package manager for Linux and other Unix-like systems that makes package management reliable and reproducible.",
-                "tags": ["nix", "nixos", "devenv"],
-                "url": "https://nixos.org/guides/ad-hoc-developer-environments.html",
-                "file_path": "nix-devenv.md",
-                "modified": datetime.datetime.now()
-            },
-            {
-                "title": "Textual: A Modern TUI Framework for Python",
-                "excerpt": "Textual is a modern TUI (Text User Interface) framework for Python that makes it easy to build sophisticated applications that run in the terminal.",
-                "tags": ["textual", "python", "tui", "readitnow/read"],
-                "url": "https://textual.textualize.io/",
-                "file_path": "textual-tui.md",
-                "modified": datetime.datetime.now()
-            },
-        ]
-    
+        self.config = config or {}
+        # TODO: check if vault_path and display error to user
+        self.vault_path = self.config.get('vault_path', '')
+        
+        try:
+            # Initialize vault reader
+            self.vault_reader = VaultReader(self.config)
+            self.notes = self.vault_reader.get_recent_notes()
+            self.vault_stats = self.vault_reader.get_vault_stats()
+        except Exception as e:
+            print(f"Error initializing vault reader: {e}")
+            self.vault_reader = None
+            self.notes = []
+            self.vault_stats = {'total_notes': 0, 'showing_notes': 0}
+
     def compose(self) -> ComposeResult:
         """Create the main application layout."""
         # Header
@@ -104,7 +64,7 @@ class ReadItNowApp(App):
         
         # Main content area with notes grid
         with Container(classes="main-content"):
-            yield NotesGrid(self.mock_notes)
+            yield NotesGrid(self.notes)
         
         # Footer with keybindings
         yield Static("Press 'q' to quit • ↑↓ Scroll • Enter Open", classes="footer")

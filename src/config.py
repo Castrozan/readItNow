@@ -7,7 +7,9 @@ CONFIG_FILE = CONFIG_DIR / "config.yaml"
 CACHE_DIR = Path.home() / ".cache" / APP_NAME
 
 DEFAULT_CONFIG = {
-    'vault_path': str(Path.home() / "vault" / "plugins" / "readitlater"),
+    'vault_path': str(Path.home() / "vault" / "ReadItLater Inbox"),
+    'max_notes': 20,
+    'excerpt_lines': 5,
     'keybindings': {
         'open_link': "enter",
         'open_file': "shift+enter",

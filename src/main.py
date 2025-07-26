@@ -32,11 +32,10 @@ def main():
     
     # Load configuration
     config = load_or_create_config()
-    vault_path = config.get('vault_path')
     
     # Launch the TUI application
     try:
-        app = ReadItNowApp(vault_path=vault_path)
+        app = ReadItNowApp(config=config)
         app.run()
     except KeyboardInterrupt:
         print("\n👋 Goodbye!")
