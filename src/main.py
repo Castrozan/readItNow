@@ -6,9 +6,8 @@ This is the main entrypoint for the ReadItNow application.
 """
 
 import sys
-from pathlib import Path
 from config import load_or_create_config
-from tui import run_app
+from app import ReadItNowApp
 
 def check_dependencies():
     """Check if all required dependencies are available."""
@@ -37,7 +36,8 @@ def main():
     
     # Launch the TUI application
     try:
-        run_app(vault_path)
+        app = ReadItNowApp(vault_path=vault_path)
+        app.run()
     except KeyboardInterrupt:
         print("\n👋 Goodbye!")
     except Exception as e:
