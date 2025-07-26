@@ -35,6 +35,8 @@ class ReadItNowApp(App):
     BINDINGS = [
         ("q", "quit", "Quit"),
         ("ctrl+c", "quit", "Quit"),
+        ("up", "scroll_up", "Scroll Up"),
+        ("down", "scroll_down", "Scroll Down"),
     ]
     
     def __init__(self, vault_path: str, **kwargs):
@@ -76,7 +78,23 @@ class ReadItNowApp(App):
                 "url": "https://example.com/tui-design",
                 "file_path": "tui-design.md",
                 "modified": datetime.datetime.now()
-            }
+            },
+            {
+                "title": "Getting Started with Nix",
+                "excerpt": "Nix is a powerful package manager for Linux and other Unix-like systems that makes package management reliable and reproducible.",
+                "tags": ["nix", "nixos", "devenv"],
+                "url": "https://nixos.org/guides/ad-hoc-developer-environments.html",
+                "file_path": "nix-devenv.md",
+                "modified": datetime.datetime.now()
+            },
+            {
+                "title": "Textual: A Modern TUI Framework for Python",
+                "excerpt": "Textual is a modern TUI (Text User Interface) framework for Python that makes it easy to build sophisticated applications that run in the terminal.",
+                "tags": ["textual", "python", "tui", "readitnow/read"],
+                "url": "https://textual.textualize.io/",
+                "file_path": "textual-tui.md",
+                "modified": datetime.datetime.now()
+            },
         ]
     
     def compose(self) -> ComposeResult:
@@ -93,4 +111,12 @@ class ReadItNowApp(App):
     
     def action_quit(self) -> None:
         """Quit the application."""
-        self.exit() 
+        self.exit()
+
+    def action_scroll_up(self) -> None:
+        """Scroll up the notes grid."""
+        self.query_one(NotesGrid).scroll_up()
+
+    def action_scroll_down(self) -> None:
+        """Scroll down the notes grid."""
+        self.query_one(NotesGrid).scroll_down() 
