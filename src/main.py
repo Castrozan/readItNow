@@ -8,6 +8,7 @@ This is the main entrypoint for the ReadItNow application.
 import sys
 from pathlib import Path
 from config import load_or_create_config
+from tui import run_app
 
 def check_dependencies():
     """Check if all required dependencies are available."""
@@ -25,21 +26,23 @@ def check_dependencies():
 
 def main():
     """Main application entrypoint."""
-    print("🚀 ReadItNow - Terminal UI for Obsidian ReadItLater")
-    print("=" * 50)
-    
     # Check dependencies
     if not check_dependencies():
-        print("\n❌ Some dependencies are missing. Please check your environment.")
+        print("❌ Some dependencies are missing. Please check your environment.")
         sys.exit(1)
     
+    # Load configuration
     config = load_or_create_config()
     vault_path = config.get('vault_path')
     
-    print("\n✅ Configuration loaded successfully!")
-    print(f"  - Vault Path: {vault_path}")
-
-    # Further implementation will go here...
+    # Launch the TUI application
+    try:
+        run_app(vault_path)
+    except KeyboardInterrupt:
+        print("\n👋 Goodbye!")
+    except Exception as e:
+        print(f"❌ Error running ReadItNow: {e}")
+        sys.exit(1)
 
 if __name__ == "__main__":
     main() 
